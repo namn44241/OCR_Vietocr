@@ -19,7 +19,7 @@ def rotate(
         - ảnh đã được xoay
     """
 
-    (h, w) = img.shape
+    (h, w) = img.shape[:2]
     center = (h//2, w//2)
 
     M = cv2.getRotationMatrix2D(center, angle, 1.0)
@@ -55,4 +55,4 @@ def projection_profile_method(
         angle += 1
     
     t1 = time.time()
-    return rotated, best_angle, t1 - t0
+    return rotated, best_angle, {"skew_correction": t1 - t0}

@@ -1,3 +1,6 @@
+# import build-in dependencies
+import time
+
 # import 3rd part dependencies
 import cv2
 import numpy as np
@@ -13,8 +16,11 @@ def binarization(
     :return
         - binary: ảnh nhị phân
     """
+    t0 = time.time()
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     _, thresh = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
     binary = cv2.bitwise_not(thresh)
-    return binary
+    
+    t1 = time.time()
+    return binary, {"binarization": t1 - t0}
