@@ -9,7 +9,8 @@ from PIL import Image
 # import project dependencies
 from .parse_words import parse_words
 from .parse_lines import group_words_by_lines
-from helpers.file_helpers import add_white_padding
+from modules.preprocessing.resize import resize_img
+from helpers.file_helpers import add_white_padding 
 
 def sub_predict(
         img: np.ndarray,
@@ -21,10 +22,7 @@ def sub_predict(
     t0 = time.time()
 
     text = ""
-    process_time = {"predict_total": 0,
-                    "parse_lines": 0,
-                    "parse_words": 0
-                    }
+    process_time = {"predict_total": 0, "parse_lines": 0, "parse_words": 0}
     
     _, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)
     binary_img = cv2.bitwise_not(thresh)
@@ -37,18 +35,22 @@ def sub_predict(
 
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     for line in lines:
-        line_text = []
-
-        for cnt, x, y, w, h in line:
-            word_img = img[y: y + h, x: x + w]
-            word_img = add_white_padding(word_img, 20)
-
-            thin_word_img = cv2.erode(word_img, kernel, iterations=1)
-            thin_word_img = Image.fromarray(thin_word_img)
-            line_text.append(detector.predict(thin_word_img))
+        batch_size = max(1, len(line) // 2)
+        batches = [line[i:i + batch_size] for i in range(0, len(line), batch_size)]
         
-        text += " ".join(line_text) + "\n"
-    
-    t1 = time.time()
-    process_time["predict_total"] = t1 - t0
+        batch_texts = []
+        for batch in batches:
+            batch_img = []
+
+            for x, y, w, h in batch:
+                word_img = add_white_padding(img[y:y + h, x:x + w])
+                thin_img = cv2.erode(word_img, kernel, iterations = 1)
+                resize = resize_img(thin_img, 32)
+                batch_img.append(Image.fromarray(resize))
+            
+            batch_texts.extend(detector.predict_batch(batch_img))
+        
+        text += " ".join(batch_texts) + "\n"
+
+    process_time["predict_total"] = time.time() - t0
     return text, process_time

@@ -2,12 +2,12 @@
 import time
 
 # import 3rd party dependencies
-import cv2
 import numpy as np
+from sklearn.cluster import DBSCAN
 
 
 def group_words_by_lines(
-        contours
+        boxes
 ):
     """
     Nhóm các từ thành các dòng
@@ -16,33 +16,29 @@ def group_words_by_lines(
     :return: 
         - list of lines
     """
+
     t0 = time.time()
-    boxes = []
-    for cnt in contours:
-        x, y, w, h = cv2.boundingRect(cnt)
-        boxes.append((cnt, x, y, w, h))
 
-    boxes.sort(key=lambda box: box[2])
+    boxes = boxes[boxes[:, 1].argsort()]
+
     lines = []
-    current_line = [boxes[0]]
+    current_line = []
+    y_threshold = 10
 
-    for box in boxes[1:]:
-        _, _, y, _, _ = box
-        _, _, prev_y, _, prev_h = current_line[-1]
-
-        # Nếu y của box hiện tại gần với y của box trước, thêm vào dòng hiện tại
-        if abs(y - prev_y) <= 10:
+    for box in boxes:
+        x, y, w, h = box
+        if not current_line:
             current_line.append(box)
         else:
-            # Sắp xếp các chữ trong dòng theo x
-            current_line.sort(key=lambda box: box[1])
-            lines.append(current_line)
-            current_line = [box]
-
-    # Thêm dòng cuối cùng
+            last_x, last_y, last_w, last_h = current_line[-1]
+            if abs(y - last_y) < y_threshold:
+                current_line.append(box)
+            else:
+                lines.append(sorted(current_line, key = lambda x: x[0]))
+                current_line = [box]
+    
     if current_line:
-        current_line.sort(key=lambda box: box[1])
-        lines.append(current_line)
-
+        lines.append(sorted(current_line, key = lambda x: x[0]))
+    
     t1 = time.time()
     return lines, {"parse_lines": t1 - t0}
