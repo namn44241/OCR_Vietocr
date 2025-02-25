@@ -1,6 +1,3 @@
-# import build-in dependencies
-import time
-
 # import 3rd part dependencies
 import cv2
 import numpy as np
@@ -8,7 +5,6 @@ import numpy as np
 # import project dependencies
 from ...helpers.timer import timer
 
-@timer
 def noise_removal(
         img: np.ndarray,
         area_threshold: int = 1000

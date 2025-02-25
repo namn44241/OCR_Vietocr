@@ -40,13 +40,24 @@ def load_img(
     
     return img
 
-def add_white_padding(
+def add_black_padding(
         img: np.ndarray,
         padding: int = 20
+):
+    h, w = img.shape[:2]
+
+    black_img = np.zeros((h + 2 * padding, w + 2 * padding), np.uint8)
+    black_img[padding:h + padding, padding:w + padding] = img
+
+    return black_img
+
+def add_white_padding(
+        img: np.ndarray,
+        padding:  int = 20
 ):
     h, w = img.shape[:2]
 
     white_img = np.ones((h + 2 * padding, w + 2 * padding), np.uint8) * 255
     white_img[padding:h + padding, padding:w + padding] = img
 
-    return img
+    return white_img
