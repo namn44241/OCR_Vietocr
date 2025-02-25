@@ -7,8 +7,8 @@ from pydantic import BaseModel
 
 class Config(BaseModel):
     base_url: str = "https://dichvucong.gov.vn/p/home"
-    raw_data_dir: str = "D:\\hoc-AI-ML\\OCR\\raw_data"
-    image_data_dir: str = "D:\\hoc-AI-ML\\OCR\\data"
+    raw_data_dir: str = "D:\\hoc-AI-ML\\OCR\\test_api\\data\\raw_data"
+    image_data_dir: str = "D:\\hoc-AI-ML\\OCR\\test_api\\data\\img_data"
 
     def __init__(self, **data):
         super().__init__(**data)

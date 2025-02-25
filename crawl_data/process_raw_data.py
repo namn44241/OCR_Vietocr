@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 # import project dependencies
 from core.config import config
-from helpers import file_helpers
+from ...helpers import file_helpers
 
 def process_raw_data():
     files = os.listdir(config.raw_data_dir)
