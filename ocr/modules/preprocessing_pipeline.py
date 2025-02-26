@@ -11,7 +11,7 @@ from .pre_processing import (
 )
 from ..helpers import image_helpers, timer
 
-@timer.timer
+# @timer.timer
 def preprocessing_pipeline(
         file_path: Union[str, np.ndarray]
 ):

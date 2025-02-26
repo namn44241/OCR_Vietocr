@@ -1,4 +1,5 @@
 albumentations==1.4.2
+annotated-types==0.7.0
 asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1733250440834/work
 attrs==25.1.0
 beautifulsoup4==4.13.3
@@ -24,6 +25,7 @@ fonttools==4.56.0
 fsspec==2025.2.0
 gdown==4.4.0
 h11==0.14.0
+huggingface-hub==0.29.1
 idna==3.10
 imageio==2.37.0
 imgaug==0.4.0
@@ -68,12 +70,15 @@ prompt_toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolki
 psutil @ file:///D:/bld/psutil_1735327360263/work
 pure_eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_1733569405015/work
 pycparser==2.22
+pydantic==2.10.6
+pydantic_core==2.27.2
 Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1736243443484/work
 pynose==1.5.4
 pyotp==2.9.0
 pyparsing==3.2.1
 pyreadline3==3.5.4
 PySocks==1.7.1
+pytesseract==0.3.13
 pytest==8.3.4
 pytest-html==4.0.2
 pytest-metadata==3.1.1
@@ -84,14 +89,17 @@ python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateu
 pywin32==307
 PyYAML==6.0.2
 pyzmq @ file:///D:/bld/pyzmq_1738270978316/work
+regex==2024.11.6
 requests==2.32.3
 rich==13.9.4
+safetensors==0.5.2
 sbvirtualdisplay==1.4.0
 scikit-image==0.25.2
 scikit-learn==1.6.1
 scipy==1.15.2
 selenium==4.29.0
 seleniumbase==4.35.0
+sentencepiece==0.2.0
 shapely==2.0.7
 six @ file:///home/conda/feedstock_root/build_artifacts/six_1733380938961/work
 sniffio==1.3.1
@@ -102,11 +110,13 @@ sympy==1.13.1
 tabcompleter==1.4.0
 threadpoolctl==3.5.0
 tifffile==2025.2.18
+tokenizers==0.21.0
 torch==2.6.0
 torchvision==0.21.0
 tornado @ file:///D:/bld/tornado_1732615900055/work
 tqdm==4.67.1
 traitlets @ file:///home/conda/feedstock_root/build_artifacts/traitlets_1733367359838/work
+transformers==4.49.0
 trio==0.29.0
 trio-websocket==0.12.1
 typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1733188668063/work
