@@ -1,19 +1,13 @@
-# import built-in dependencies
-import time
+from typing import *
 
-# import 3rd party dependencies
-import cv2
 import numpy as np
-
-# import project dependencies
-from ...helpers.timer import timer
 
 def horizontal_presegment(
         img: np.ndarray,
         threshold = 0.28,
-        min_gap_height = 3,
-        min_gap_width = 10
-):
+        min_gap_height = 2,
+        min_gap_width = 8
+) -> List[Tuple[int, int]]:
     """
     Xác định khoảng trống giữa các dòng bằng tổng số pixels theo hàng ngang thỏa mãn điều kiện
     :param
@@ -54,7 +48,7 @@ def vertical_segment(
         img: np.ndarray, 
         min_gap_height = 40, 
         min_gap_width = 50
-):
+) -> List[Tuple[int, int]]:
     """
     Xác định khoảng trống giữa các cột bằng tổng số pixels theo hàng dọc thỏa mãn điều kiện
     :param
@@ -97,8 +91,8 @@ def profile_projection_segment(
     :return:
         list image segments
     """
-    resp_objs = {"need_correct": [],
-                 "corrected": []}
+    resp_objs = {"Pytesseract": [],
+                 "VietOcr": []}
     
     horizontal_text_segments = horizontal_presegment(img)
 
@@ -108,10 +102,10 @@ def profile_projection_segment(
         vertical_text_segments = vertical_segment(sub_img)
         if len(vertical_text_segments) > 1:
             for x_start, x_end in vertical_text_segments:
-                resp_objs["corrected"].append(((y_start, x_start), (y_end, x_end)))
+                resp_objs["VietOcr"].append(((y_start, x_start), (y_end, x_end)))
         
         else:
             x_start, x_end = vertical_text_segments[0]
-            resp_objs["need_correct"].append(((y_start, x_start), (y_end, x_end)))
+            resp_objs["Pytesseract"].append(((y_start, x_start), (y_end, x_end)))
     
     return resp_objs

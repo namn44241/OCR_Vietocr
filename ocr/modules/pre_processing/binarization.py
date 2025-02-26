@@ -1,11 +1,9 @@
-# import 3rd part dependencies
+from typing import *
+
 import cv2
 import numpy as np
 
-# import project dependencies
-from ...helpers.timer import timer
-
-def BGR_2_Binary(img: np.ndarray):
+def binarization(img: np.ndarray) -> np.ndarray:
     """
     Hàm chuyển đổi ảnh từ ảnh màu sang ảnh nhị phân (ảnh gồm 2 pixel: 0 và 1).
     :param

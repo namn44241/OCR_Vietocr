@@ -1,14 +1,12 @@
-# import 3rd part dependencies
+from typing import *
+
 import cv2
 import numpy as np
-
-# import project dependencies
-from ...helpers.timer import timer
 
 def noise_removal(
         img: np.ndarray,
         area_threshold: int = 1000
-):
+) -> np.ndarray:
     """
     Hàm xóa nhiễu ảnh nhị phân
     :param

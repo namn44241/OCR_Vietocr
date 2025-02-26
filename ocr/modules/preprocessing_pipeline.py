@@ -1,17 +1,17 @@
-# import build-in dependencies
 from typing import *
 
-# import 3rd part dependencies
-import cv2
 import numpy as np
 
-# import project depndencies
-from . import  binarization, skew_correction, noise_removal, bounds_removal
-from . import segment
-from ...helpers import file_helpers
-from ...helpers.timer import timer
+from .pre_processing import (
+    binarization, 
+    skew_correction, 
+    noise_removal, 
+    bounds_removal, 
+    segment
+)
+from ..helpers import image_helpers, timer
 
-@timer
+@timer.timer
 def preprocessing_pipeline(
         file_path: Union[str, np.ndarray]
 ):
@@ -24,14 +24,15 @@ def preprocessing_pipeline(
     """
 
     # Load ảnh
-    img = file_helpers.load_img(file_path)
+    img = image_helpers.load_img(file_path)
     _, w = img.shape[:2]
     
     # B1: Binarization
-    bitwise_binary_img = binarization.BGR_2_Binary(img)
+    bitwise_binary_img = binarization.binarization(img)
 
     # B2: Skew correction
     skew_corrected, best_angle = skew_correction.projection_profile_method(bitwise_binary_img)
+    img = skew_correction.rotate(img, best_angle)
 
     # B3:Noise removal
     noise_removed = noise_removal.noise_removal(skew_corrected)
@@ -43,18 +44,20 @@ def preprocessing_pipeline(
     # B5: Segmentation
     segments = segment.profile_projection_segment(removed_bounds)
     
-    resp_objs = {"need_correct": [], "corrected": []}
+    resp_objs = {"VietOcr": [], "Pytesseract": []}
     for key, value in segments.items():
-        for (pt1, pt2) in value:
-            y_start , x_start = pt1
-            y_end, x_end = pt2
-            region = skew_corrected[y_start: y_end, x_start + left_bound: x_end + left_bound]
+        corrected = True if key == "VietOcr" else False
 
-            resp_objs[key].append(
-                file_helpers.add_black_padding(
-                    img = region,
-                    padding = 20
-                )
-            )
+        for (pt1, pt2) in value:
+            (y_start , x_start), (y_end, x_end) = pt1, pt2
+
+            if corrected:
+                region = skew_corrected[y_start: y_end, x_start + left_bound: x_end + left_bound]
+                region = image_helpers.add_padding(region, "black", 20)
+            
+            else:
+                region = img[y_start: y_end, x_start + left_bound: x_end + left_bound]
+
+            resp_objs[key].append(region)
 
     return resp_objs

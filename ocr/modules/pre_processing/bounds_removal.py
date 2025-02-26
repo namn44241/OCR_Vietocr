@@ -5,14 +5,11 @@ from typing import *
 import cv2
 import numpy as np
 
-# import project dependencies
-from ...helpers.timer import timer
-
 
 def find_bounds(
         img: np.ndarray,
         step: int,
-):
+) -> Tuple[int, int]:
     """
     Hàm tìm khoảng cách lề của hình ảnh nhị phân, giúp giảm nhiễu cho bước tách văn bản.
     :param
@@ -40,7 +37,7 @@ def find_bounds(
 def find_bound(
         arr: List[Any],
         step: int,
-):
+) -> int:
     """
     Hàm tìm mode cận dưới của một tập hợp các giá trị số
     :param

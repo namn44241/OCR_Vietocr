@@ -1,12 +1,9 @@
+from typing import *
+
 import cv2
 import numpy as np
 
-from ...helpers.timer import timer
-
-def rotate(
-        img: np.ndarray,
-        angle: int
-):
+def rotate(img: np.ndarray, angle: int) -> np.ndarray:
     """
     Hàm xoay ảnh theo một góc.
     :param
@@ -17,7 +14,7 @@ def rotate(
     """
 
     (h, w) = img.shape[:2]
-    center = (h//2, w//2)
+    center = (h // 2, w // 2)
 
     M = cv2.getRotationMatrix2D(center, angle, 1.0)
     return cv2.warpAffine(img, M, (w, h), flags = cv2.INTER_CUBIC, borderMode = cv2.BORDER_REPLICATE)
@@ -25,7 +22,7 @@ def rotate(
 def projection_profile_method(
         img: np.ndarray,
         angle_range = (-2, 2)
-):
+) -> Tuple[np.ndarray, int]:
     """
     Hàm xoay chỉnh ảnh bằng phương pháp ``projection profile``.
     :param
@@ -50,4 +47,4 @@ def projection_profile_method(
         
         angle += 1
     
-    return rotated, angle
+    return rotated, best_angle

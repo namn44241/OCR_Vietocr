@@ -72,4 +72,3 @@ def display_interval_distribution(
 
 
 
-
