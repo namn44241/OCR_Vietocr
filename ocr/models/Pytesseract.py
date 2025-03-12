@@ -12,7 +12,7 @@ class Pytesseract(OcrModel.OcrModel):
 
     def forward(self, img: np.ndarray):
         img = Image.fromarray(img)
-        return self.model.image_to_string(img, lang = "vie").lower()
+        return self.model.image_to_string(img, lang = "vie")
     
 
 pytesseract_model = Pytesseract()

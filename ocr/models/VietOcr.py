@@ -20,4 +20,4 @@ class VietOcr(OcrModel.OcrModel):
         return self.model.predict(img).lower() + " "
 
 
-vietocr_model = VietOcr()
+# vietocr_model = VietOcr()

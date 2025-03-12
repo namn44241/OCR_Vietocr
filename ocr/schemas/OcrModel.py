@@ -10,5 +10,3 @@ class OcrModel(ABC):
     @abstractmethod
     def forward(self, img: np.ndarray):
         raise NotImplementedError()
-
-

@@ -21,7 +21,7 @@ def rotate(img: np.ndarray, angle: int) -> np.ndarray:
 
 def projection_profile_method(
         img: np.ndarray,
-        angle_range = (-2, 2)
+        angle_range = (-4, 4)
 ) -> Tuple[np.ndarray, int]:
     """
     Hàm xoay chỉnh ảnh bằng phương pháp ``projection profile``.

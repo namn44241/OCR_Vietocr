@@ -1,10 +1,7 @@
-# import build-in dependencies
 from typing import *
 
-# import 3rd part dependencies
 import cv2
 import numpy as np
-
 
 def find_bounds(
         img: np.ndarray,

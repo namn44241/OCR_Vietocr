@@ -2,11 +2,13 @@ from typing import *
 
 import numpy as np
 
+from ...helpers import plot
+
 def horizontal_presegment(
         img: np.ndarray,
-        threshold = 0.28,
-        min_gap_height = 2,
-        min_gap_width = 8
+        threshold = 0.35,
+        min_gap_height = 25,
+        min_gap_width = 30
 ) -> List[Tuple[int, int]]:
     """
     Xác định khoảng trống giữa các dòng bằng tổng số pixels theo hàng ngang thỏa mãn điều kiện
@@ -42,7 +44,17 @@ def horizontal_presegment(
     if current_pos < img.shape[0]:
         text_segments.append((current_pos, img.shape[0]))
 
-    return [(s, e) for (s, e) in text_segments if e <= h_crop]
+    resp_objs = []
+    for (s, e) in text_segments:
+        if e > h_crop: continue
+
+        if s >= 10: s -= 10
+        if e <= img.shape[0] - 10:
+            e += 10
+        
+        resp_objs.append((s, e))
+
+    return resp_objs
 
 def vertical_segment(
         img: np.ndarray, 
@@ -79,7 +91,14 @@ def vertical_segment(
     if current_pos < img.shape[1]:
         text_segments.append((current_pos, img.shape[1]))
 
-    return text_segments
+    resp_objs = []
+    for (s, e) in text_segments:
+        if s >= 60: s -= 60
+        if e <= img.shape[1] - 60:
+            e += 60
+        
+        resp_objs.append((s, e))
+    return resp_objs
 
 def profile_projection_segment(
         img: np.ndarray
@@ -91,21 +110,30 @@ def profile_projection_segment(
     :return:
         list image segments
     """
-    resp_objs = {"Pytesseract": [],
-                 "VietOcr": []}
+    resp_objs = []
     
-    horizontal_text_segments = horizontal_presegment(img)
+    h_segments = horizontal_presegment(img)
+    h_segments = sorted(h_segments, key = lambda x: x[0])
 
-    for y_start, y_end in horizontal_text_segments:
-        sub_img = img[y_start: y_end, :]
+    check = False
+    for i, (ys, ye) in enumerate(h_segments):
+        ys, ye = int(ys), int(ye)
+        sub_img = img[ys: ye, :]
 
-        vertical_text_segments = vertical_segment(sub_img)
-        if len(vertical_text_segments) > 1:
-            for x_start, x_end in vertical_text_segments:
-                resp_objs["VietOcr"].append(((y_start, x_start), (y_end, x_end)))
-        
+        v_segments = vertical_segment(sub_img)
+
+        if len(v_segments) > 1:
+            check = True
+            continue
+
         else:
-            x_start, x_end = vertical_text_segments[0]
-            resp_objs["Pytesseract"].append(((y_start, x_start), (y_end, x_end)))
+            if check: 
+        # if len(v_segments) == 1 and (i != 0):
+                xs, xe = map(int, v_segments[0])
+
+                resp_objs.append((
+                    (ys, xs), (ye, xe)
+                ))
+                break
     
     return resp_objs

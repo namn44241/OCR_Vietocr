@@ -2,14 +2,12 @@ from typing import *
 
 import numpy as np
 
-from .pre_processing import (
-    binarization, 
-    skew_correction, 
-    noise_removal, 
-    bounds_removal, 
-    segment
-)
-from ..helpers import image_helpers, timer
+from .pre_processing.binarization import binarization
+from .pre_processing.skew_correction import projection_profile_method, rotate
+from .pre_processing.noise_removal import noise_removal
+from .pre_processing.bounds_removal import find_bounds
+from .pre_processing.segment import profile_projection_segment
+from ..helpers import image_helpers, timer, plot
 
 # @timer.timer
 def preprocessing_pipeline(
@@ -28,36 +26,31 @@ def preprocessing_pipeline(
     _, w = img.shape[:2]
     
     # B1: Binarization
-    bitwise_binary_img = binarization.binarization(img)
+    bitwise_binary_img = binarization(img)
 
     # B2: Skew correction
-    skew_corrected, best_angle = skew_correction.projection_profile_method(bitwise_binary_img)
-    img = skew_correction.rotate(img, best_angle)
+    skew_corrected, best_angle = projection_profile_method(bitwise_binary_img)
+    img = rotate(img, best_angle)
 
     # B3:Noise removal
-    noise_removed = noise_removal.noise_removal(skew_corrected)
+    noise_removed = noise_removal(skew_corrected)
 
     # B4: Bounds removal
-    (left_bound, right_bound) = bounds_removal.find_bounds(noise_removed, step = 20)
+    (left_bound, right_bound) = find_bounds(noise_removed, step = 20)
     removed_bounds = noise_removed[:, left_bound: w - right_bound]
 
     # B5: Segmentation
-    segments = segment.profile_projection_segment(removed_bounds)
+    segments = profile_projection_segment(removed_bounds)
     
-    resp_objs = {"VietOcr": [], "Pytesseract": []}
-    for key, value in segments.items():
-        corrected = True if key == "VietOcr" else False
+    resp_objs = []
+    for (pts, pte) in segments:
+        ys, xs = pts
+        ye, xe = pte
 
-        for (pt1, pt2) in value:
-            (y_start , x_start), (y_end, x_end) = pt1, pt2
+        region = img[
+            int(ys): int(ye), 
+            int(xs + left_bound): int(xe + left_bound)
+        ]
 
-            if corrected:
-                region = skew_corrected[y_start: y_end, x_start + left_bound: x_end + left_bound]
-                region = image_helpers.add_padding(region, "black", 20)
-            
-            else:
-                region = img[y_start: y_end, x_start + left_bound: x_end + left_bound]
-
-            resp_objs[key].append(region)
-
+        resp_objs.append(region)
     return resp_objs
