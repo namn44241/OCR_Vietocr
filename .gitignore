@@ -1,0 +1,24 @@
+# Bỏ qua thư mục môi trường ảo
+venv/
+venv1/
+.env/
+
+# Bỏ qua các tệp biên dịch của Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Bỏ qua các tệp thư viện biên dịch và liên kết động
+*.so
+*.dylib
+*.dll
+
+# Bỏ qua tệp cấu hình, build
+*.spec
+*.egg-info/
+*.egg
+*.manifest
+
+# Bỏ qua tệp log và debug
+*.log
