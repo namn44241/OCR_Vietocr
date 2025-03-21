@@ -21,6 +21,15 @@ def pdf2img(uri: str) -> np.ndarray:
     img = np.array(images[0])
     return img 
 
+def clean_text(text: str) -> str:
+    if isinstance(text, list):
+        text = ' '.join(text)
+    text = text.replace('\n', ' ')
+    text = text.replace('[', '').replace(']', '').replace('\'', '').replace('\"', '')
+    text = ' '.join(text.split())
+    
+    return text
+
 # --------------SCHEMAS-----------------
 class OcrRequestData(BaseModel):
     uri: str
@@ -50,13 +59,13 @@ def get_abstract(data: OcrRequestData):
     img = pdf2img(uri)
     try:
         pred = ocr_model.forward(file_path = img)
+        cleaned_pred = clean_text(pred)
+        
         return {
             "success": True, 
             "status_code": 200, 
-            "payload": {"id": id, "abstract": pred}
+            "payload": {"id": id, "abstract": cleaned_pred}
         }
 
     except Exception as err:
         raise HTTPException(status_code = status.HTTP_500_INTERNAL_SERVER_ERROR, detail = str(err)) from err
- 
-    

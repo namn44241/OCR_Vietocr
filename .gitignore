@@ -1,6 +1,7 @@
 # Bỏ qua thư mục môi trường ảo
 venv/
 venv1/
+venv2/
 .env/
 
 # Bỏ qua các tệp biên dịch của Python
